@@ -6,7 +6,10 @@ import com.example.demo.mapper.UserMapper;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @AllArgsConstructor
@@ -16,13 +19,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String addNewUser(UserDTO userDTO) {
+        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists!");
+        }
         User user = UserMapper.toEntity(userDTO);
-        userRepository.save(user);
+        if (user == null || user.getUsername() == null || user.getUsername().isEmpty() || user.getUsername().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user data!");
+        }
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username must be unique!");
+        }
         return "User added successfully!";
     }
+
+
     @Override
     public UserDTO getUserByUsername(String username){
-        User user = userRepository.findByUsername(username).orElse(null);
+        if (username == null || username.isEmpty() || username.isBlank() || username.trim().isEmpty() || username.equals("null") || username.equals("undefined") || username.equals(" "))  {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username cannot be null or empty!");
+        }
+        if (!userRepository.findByUsername(username).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+        }                                          
+        User user = userRepository.findByUsername(username).get();
         return UserMapper.toDTO(user);
+
     }
 }
