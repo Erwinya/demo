@@ -20,7 +20,18 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new IllegalArgumentException("User is not valid");
         }
+        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+        throw new IllegalArgumentException("Bu kullanıcı adı zaten mevcut!");
+    }    
         userRepository.save(user);
         return "User added successfully!";
+    }
+    //asking to serdar for Optional function
+    @Override
+    public UserDTO getUserByUsername(String username){
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        
+        return UserMapper.toDTO(user);
     }
 }

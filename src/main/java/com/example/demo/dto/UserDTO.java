@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+//asking to serdar for why we dont use @data for User.java class
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
