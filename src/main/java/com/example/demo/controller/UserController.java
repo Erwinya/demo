@@ -15,7 +15,7 @@ import java.time.Instant;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping // eger ayni isimde databasede user varsa hata veriyor             
+    @PostMapping            
     @ResponseStatus(HttpStatus.CREATED)
     public CustomResponse<String> registerNewUser(@RequestBody UserDTO userDTO) {
         String serviceResponse = userService.addNewUser(userDTO);
@@ -28,13 +28,7 @@ public class UserController {
     }
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public CustomResponse<UserDTO> getUserByUsername(@PathVariable String username) {
-        if (username == null || username.isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
-        }
-        if (!userService.getUserByUsername(username).getUsername().equals(username)) {
-            throw new IllegalArgumentException("User not found");
-        }
+    public CustomResponse<UserDTO> getUserByUsername(@PathVariable String username) { 
         UserDTO userDTO = userService.getUserByUsername(username);
         CustomResponse<UserDTO> response = new CustomResponse<UserDTO>();
         response.setData(userDTO);
