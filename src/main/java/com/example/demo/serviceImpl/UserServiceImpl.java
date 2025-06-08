@@ -23,29 +23,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String addNewUser(UserDTO userDTO) {
-        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already exists!");
-        }
         User user = UserMapper.toEntity(userDTO);
-        if (user == null || user.getUsername() == null || user.getUsername().isEmpty() || user.getUsername().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid user data!");
+        if (user == null) {
+            throw new IllegalArgumentException("User is not valid");
         }
-        try {
-            userRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username must be unique!");
-        }
-        try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            throw new BadRequestException("Unknown exception: ".concat(e.toString()));
-        }
+        userRepository.save(user);
         return "User added successfully!";
     }
 
 
     @Override
-    public UserDTO getUserByUsername(String username, String surname){
+    public UserDTO getUserByUsername(String username){
         if (username.isBlank() )  {
             throw new BadRequestException("Username cannot be null or empty!");
         }

@@ -15,7 +15,7 @@ import java.time.Instant;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping            
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CustomResponse<String> registerNewUser(@RequestBody UserDTO userDTO) {
         String serviceResponse = userService.addNewUser(userDTO);
@@ -28,8 +28,8 @@ public class UserController {
     }
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CustomResponse<UserDTO> getUserByUsername(@RequestParam String username, @RequestParam String surname) {
-        UserDTO userDTO = userService.getUserByUsername(username, surname);
+    public CustomResponse<UserDTO> getUserByUsername(@RequestParam String username) {
+        UserDTO userDTO = userService.getUserByUsername(username);
         CustomResponse<UserDTO> response = new CustomResponse<>();
         response.setData(userDTO);
         response.setStatusCode(200);
