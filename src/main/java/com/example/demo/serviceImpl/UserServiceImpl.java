@@ -8,11 +8,7 @@ import com.example.demo.mapper.UserMapper;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.Optional;
 
 @Service
@@ -30,8 +26,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return "User added successfully!";
     }
-
-
     @Override
     public UserDTO getUserByUsername(String username){
         if (username.isBlank() )  {
@@ -43,6 +37,5 @@ public class UserServiceImpl implements UserService {
         }
 
         return UserMapper.toDTO(user.get());
-
     }
 }
